@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.TagsDao">
+    <resultMap id="BaseTags" type="com.loop.web.bean.Tags">
+        <id column="tags_id" property="tagsId"/>
+        <result column="tags_name" property="tagsName"/>
+        <result column="problem_id" property="problemId"/>
+    </resultMap>
+
+    <insert id="addTags" useGeneratedKeys="true" keyColumn="tags_id" keyProperty="tagsId" parameterType="map">
+        insert into tags (tags_name,problem_id) values (#{tagName},#{problemId})
+   </insert>
+    <delete id="deleteTagByProblemId">
+        delete from tags where problem_id=#{problemId}
+    </delete>
+    <select id="getAllTags"  resultType="com.loop.web.bean.Tags">
+       select tags_id,tags_name from tags  GROUP BY tags_name
+    </select>
+    <select id="getProListByTagsName" resultType="java.lang.Integer">
+            SELECT problem_id from tags where  tags_name=#{tagsName}
+    </select>
+
+</mapper>

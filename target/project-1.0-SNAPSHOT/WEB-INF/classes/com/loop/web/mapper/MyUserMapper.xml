@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.MyUserDao">
+
+    <select id="getAllUser" resultType="com.loop.web.bean.User">
+        select * from user;
+    </select>
+
+    <insert id="insertUser" parameterType="User">
+        insert into user (user_id, user_status, username, password, user_nickname, user_code, user_email, user_school, user_submit, user_solved)
+        values (#{userId}, #{userStatus}, #{username}, #{password}, #{userNickname}, #{userCode}, #{userEmail}, #{userSchool}, #{userSubmit}, #{userSolved})
+    </insert>
+
+    <delete id="deleteUserById" parameterType="User">
+        delete from user where user_id = #{userId};
+    </delete>
+    
+    <update id="updateUserById" parameterType="User">
+        update user set username="updateSuccess" where user_id = #{userId}
+    </update>
+
+</mapper>

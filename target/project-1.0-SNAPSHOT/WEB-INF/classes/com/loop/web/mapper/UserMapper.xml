@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loop.web.dao.UserDao">
+    <resultMap id="BaseResultMap" type="com.loop.web.bean.User">
+        <id column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="user_creat_time" jdbcType="TIMESTAMP" property="userCreatTime" />
+        <result column="user_status" jdbcType="VARCHAR" property="userStatus" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+        <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+        <result column="user_school" jdbcType="VARCHAR" property="userSchool" />
+        <result column="user_nickname" jdbcType="VARCHAR" property="userNickname" />
+        <result column="user_submit" jdbcType="VARCHAR" property="userSubmit"/>
+        <result column="user_solved" jdbcType="VARCHAR" property="userSolved"/>
+    </resultMap>
+    <!--得到所有对象-->
+    <select id="getAllUser"  resultType="com.loop.web.bean.User">
+        select * from  user order by user_solved desc
+    </select>
+    <!--保存对象-->
+    <insert id="insertUser" parameterType="User">
+        insert into user (user_id,user_creat_time,user_status,username,password,user_code,user_email,user_school,user_nickname)
+        value (#{userId},#{userCreatTime},#{userStatus},#{username},#{password},#{userCode},#{userEmail},#{userSchool},#{userNickname})
+    </insert>
+    <!--根据用户的用户名得到用户信息-->
+    <select id="getUserByUsername" parameterType="String" resultMap="BaseResultMap">
+        select * from  user where username=#{username}
+    </select>
+    <!--删除用户通过用户的id-->
+    <delete id="deleteUserById" parameterType="String">
+        delete from user where user_id=#{userId}
+    </delete>
+    <!--根据用户的id得到用户信息-->
+    <select id="getUserById" parameterType="String" resultMap="BaseResultMap">
+        select * from  user where user_id=#{userId}
+    </select>
+    <!--通过用户的id得到用户的所有角色id-->
+    <select id="getUserRoldId" parameterType="String" resultType="java.lang.String">
+        select role_id from user_role where user_id=#{userId}
+    </select>
+    <!--删除用户的角色关联-->
+    <delete id="deleteUserRole" parameterType="String">
+    delete from user_role where user_id=#{userId}
+  </delete>
+      <!--为用户分配角色-->
+    <insert id="addUserRole" parameterType="map">
+        insert into user_role (user_id,role_id)
+        values(#{userId},#{roleId})
+  </insert>
+    <update id="updateUserById">
+        update `user` set user_submit=#{user_submit} where user_id=#{userId}
+    </update>
+    <update id="updateUserinfoById">
+        update `user` set user_solved=#{user_submit} where user_id=#{userId}
+    </update>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.SolutionDao">
+
+    <resultMap id="BaseSolution" type="com.loop.web.bean.Solution">
+        <id column="solution_id" jdbcType="INTEGER" property="solutionId"/>
+        <result column="problem_id" jdbcType="INTEGER" property="problemId"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="time" jdbcType="INTEGER" property="time"/>
+        <result column="memory" jdbcType="INTEGER" property="memory"/>
+        <result column="in_date" jdbcType="DATE" property="inDate"/>
+        <result column="result" jdbcType="SMALLINT" property="result"/>
+        <result column="language" jdbcType="INTEGER" property="language"/>
+        <result column="ip" jdbcType="CHAR" property="ip"/>
+        <result column="contest_id" jdbcType="INTEGER"  property="contestId"/>
+        <result column="valid" jdbcType="TINYINT" property="valid"/>
+        <result column="num" jdbcType="TINYINT" property="num"/>
+        <result column="code_length" jdbcType="INTEGER" property="codeLength"/>
+        <result column="judgetime" jdbcType="TIMESTAMP" property="judgetime"/>
+        <result column="pass_rate" jdbcType="DECIMAL" property="pass_rate"/>
+        <result column="lint_error" jdbcType="INTEGER" property="lintError"/>
+        <result column="judger" jdbcType="CHAR" property="judger"/>
+    </resultMap>
+    <select id="getAllSolution" resultType="com.loop.web.bean.Solution">
+        select * from solution
+    </select>
+    <select id="getSolution" resultType="com.loop.web.bean.Solution">
+        select * from solution where solution_id=#{solutionId};
+    </select>
+    <insert id="addSolution" useGeneratedKeys="true"  keyProperty="solutionId">
+        insert into solution (problem_id,username,code_length) VALUES (#{problemId},#{username},#{codeLength});
+    </insert>
+    <select id="getAnserStatsbyId" resultType="com.loop.web.bean.RubtimeInfo">
+       select * from runtimeinfo where solution_id=#{id} UNION select * from compileinfo  where solution_id=#{id}
+    </select>
+    <select id="getAnserStatsbyName" resultType="com.loop.web.bean.Solution">
+     select * from solution where username like concat('%',#{name},'%')
+    </select>
+
+</mapper>

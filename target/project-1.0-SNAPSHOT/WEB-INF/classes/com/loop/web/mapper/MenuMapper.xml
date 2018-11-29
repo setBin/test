@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loop.web.dao.MenuDao">
+    <resultMap id="BaseResultMap" type="com.loop.web.bean.Menu">
+        <id column="menu_id" jdbcType="VARCHAR" property="menuId"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="menu_url" jdbcType="VARCHAR" property="menuUrl"/>
+        <result column="menu_remark" jdbcType="VARCHAR" property="menuRemark"/>
+        <result column="menu_parent_id" jdbcType="VARCHAR" property="menuParentId"/>
+    </resultMap>
+
+    <resultMap id="menuPerms" type="com.loop.web.bean.MenuPermission">
+        <id property="id" column="menu_id"/>
+        <result property="url" column="menu_url"/>
+        <collection property="roleIds" column="role_id" ofType="String">
+            <constructor>
+                <arg column="role_id"/>
+            </constructor>
+        </collection>
+    </resultMap>
+
+    <!--得到角色所对应的菜单id-->
+    <select id="getMenuPerms" resultMap="menuPerms">
+        select M.menu_id,M.menu_url ,R.role_id
+        from menu M
+        LEFT JOIN role_menu R ON R.menu_id=M.menu_id
+    </select>
+    <!--得到所有的菜单列表（权限）-->
+    <select id="getAllMenu" resultMap="BaseResultMap">
+        select menu_id,menu_name,menu_url,menu_remark,menu_parent_id
+        from menu
+    </select>
+    <!--通过用户的id得到用户的菜单-->
+    <select id="getUserMenu" resultMap="BaseResultMap" parameterType="String">
+        select m.menu_name,m.menu_parent_id,m.menu_id,m.menu_url
+        from user_role ur
+        inner join role_menu rm on ur.role_id=rm.role_id
+        inner join menu m on rm.menu_id=m.menu_id
+        WHERE user_id=#{userId}
+        GROUP BY m.menu_id
+    </select>
+    <select id="getMenuById" parameterType="String" resultMap="BaseResultMap">
+        select menu_id,menu_parent_id, menu_name,menu_url,menu_remark from menu where menu_id=#{id}
+    </select>
+    <insert id="addMenu" parameterType="Menu">
+        insert into menu (menu_id,menu_parent_id, menu_name,menu_url,menu_remark) values (#{menuId},#{menuParentId},#{menuName},#{menuUrl},#{menuRemark})
+    </insert>
+    <update id="updateMenu" parameterType="Menu">
+        update menu
+        <trim prefix="SET" suffixOverrides=",">
+        <if test="menuParentId!=null">
+            menu_parent_id=#{menuParentId},
+        </if>
+        <if test="menuName!=null and menuName!=''">
+            menu_name=#{menuName},
+        </if>
+        <if test="menuUrl!=null" >
+            menu_url=#{menuUrl},
+        </if>
+        <if test="menuRemark!=null">
+            menu_remark=#{menuRemark}
+        </if>
+        </trim>
+         where  menu_id=#{menuId}
+    </update>
+</mapper>

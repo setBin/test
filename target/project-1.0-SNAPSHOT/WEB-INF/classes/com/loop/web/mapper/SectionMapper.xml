@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.SectionDao">
+    <resultMap id="BaseResultSection" type="com.loop.web.bean.Section">
+        <id column="section_id" jdbcType="VARCHAR" property="sectionId" />
+        <result column="section_remark" jdbcType="VARCHAR" property="sectionRemark"/>
+        <result column="section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+    </resultMap>
+                    <!--级联 collection嵌套结果集查询 定义集合类型的规则-->
+    <resultMap id="DiffcultResultSection0" type="com.loop.web.bean.Section">
+        <id column="section_id" jdbcType="VARCHAR" property="sectionId" />
+        <result column="section_remark" jdbcType="VARCHAR" property="sectionRemark"/>
+        <result column="section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+         <!--collection 定义关联集合属性的封装规则-->
+         <!--ofType 指定集合的里面的元素类型-->
+         <!--property 集合名-->
+        <collection property="knowledgPointList" ofType="com.loop.web.bean.KnowledgPoint">
+            <id column="point_id" jdbcType="VARCHAR" property="pointId"/>
+            <result column="point_name" jdbcType="VARCHAR" property="pointName"/>
+            <result column="point_remark" jdbcType="VARCHAR" property="pointRemark"/>
+            <result column="section_id" jdbcType="VARCHAR" property="sectionId"/>
+        </collection>
+    </resultMap>
+
+                <!--级联 collection分步查询 定义集合类型的规则-->
+    <resultMap id="DiffcultResultSection1" type="com.loop.web.bean.Section">
+        <id column="section_id" jdbcType="VARCHAR" property="sectionId" />
+        <result column="section_remark" jdbcType="VARCHAR" property="sectionRemark"/>
+        <result column="section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <!--collection 定义关联集合属性的封装规则-->
+        <!--column 传入的参数-->
+        <!--property 集合名-->
+        <!--select查询的语句-->
+        <!--分布查询：-->
+            <!--SELECT * FROM section;-->
+            <!--SELECT * from knowledge_point where section_id="77ee4232-c7cb-4757-b47c-af5ba0a47607"-->
+        <association property="user"
+                     column="user_id"
+                     select="com.loop.web.dao.UserDao.getUserById">
+        </association>
+        <collection property="knowledgPointList"
+                    column="section_id"
+                    select="com.loop.web.dao.KnowledgPointDao.getAllKonwledPointBysectionId">
+        </collection>
+    </resultMap>
+
+
+
+
+
+
+
+
+                    <!--根据association来定义单个对象的封装规则-->
+    <resultMap id="EasyResultSection0" type="com.loop.web.bean.Section">
+        <id column="section_id" jdbcType="VARCHAR" property="sectionId" />
+        <result column="section_remark" jdbcType="VARCHAR" property="sectionRemark"/>
+        <result column="section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <!--association 指定联合的javabean对象-->
+        <!--property 指定那个属性是联合的对象-->
+        <!--javaType 指定属性对象的类型-->
+        <association property="user" javaType="com.loop.web.bean.User">
+                <id column="user_id" property="userId"/>
+                <result column="username" property="username"/>
+        </association>
+
+    </resultMap>
+                         <!--根据级联属性查询 -->
+    <resultMap id="EasyResultSection1" type="com.loop.web.bean.Section">
+        <id column="section_id" jdbcType="VARCHAR" property="sectionId" />
+        <result column="section_remark" jdbcType="VARCHAR" property="sectionRemark"/>
+        <result column="section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <!--联合查询  级联属性user.username  user.userId-->
+        <result column="user_id" jdbcType="VARCHAR" property="user.userId"/>
+        <result column="username" property="user.username"/>
+    </resultMap>
+
+                     <!--使用association 进行分步查询-->
+    <resultMap id="EasyResultSection2" type="com.loop.web.bean.Section">
+        <id column="section_id" jdbcType="VARCHAR" property="sectionId" />
+        <result column="section_remark" jdbcType="VARCHAR" property="sectionRemark"/>
+        <result column="section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <!--association 定义关联对象的封装规则-->
+        <!--select：表明当前属性是调用select方法查出的结果-->
+        <!--column; 指定将那列传给select方法-->
+        <!--分布查询 ：-->
+                <!--SELECT * from user;-->
+        <!---->
+                <!--SELECT * FROM section where user_id="05c7c686-21d1-4f61-a847-7a34179043fc"-->
+
+        <association property="user"
+                     select="com.loop.web.dao.UserDao.getUserById"
+                     column="user_id">
+        </association>
+
+    </resultMap>
+
+
+
+    <select resultType="java.util.HashMap" id="getAllSection" >
+        select section_id,section_name,section_remark,username from section LEFT JOIN `user` on section.user_id=section.user_id
+    </select>
+    <insert id="addSection" parameterType="Section">
+        insert into section (section_id,section_remark,section_name,user_id) values (#{sectionId},#{sectionRemark},#{sectionName},#{userId})
+    </insert>
+    <!--OGNL判断表达式 类似jsp的EL-->
+    <!--if 复合条件则执行符合条件的部分-->
+    <update id="updaetSection" parameterType="Section">
+        update section
+        <trim prefix="set" suffixOverrides=",">
+        <if test="sectionName!=null and sectionName.trim()!=''">
+            section_name=#{sectionName},
+        </if>
+        <if test="sectionRemark!=null and sectionRemark.trim()!=''">
+            section_remark=#{sectionRemark},
+        </if>
+        </trim>
+        where section_id=#{sectionId}
+    </update>
+    <select id="getSectionInfoById" resultMap="EasyResultSection2" parameterType="String">
+        SELECT section_id,section_remark,section_name,section.user_id,username from section LEFT JOIN `user`   on section.user_id=`user`.user_id where section_id=#{sectionId}
+    </select>
+    <!--<select id="getAllKonwledPointBysectionId" resultMap="DiffcultResultSection0" parameterType="String">-->
+        <!--SELECT knowledge_point.point_id,knowledge_point.point_name,knowledge_point.point_remark,section_name,section.section_id,section_remark FROM section LEFT  JOIN knowledge_point on section.section_id=knowledge_point.section_id-->
+                    <!--WHERE section.section_id=#{sectionId}-->
+    <!--</select>-->
+    <select id="getAllKonwledPointBysectionId" resultMap="DiffcultResultSection1" parameterType="String">
+         select section_id,section_remark,section_name,user_id from section where section_id=#{sectionId}
+    </select>
+</mapper>

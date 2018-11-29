@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.ProblemDao">
+    <resultMap id="BaseResult" type="com.loop.web.bean.Problem">
+        <id column="problem_id" property="problemId"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="input" property="input"/>
+        <result column="output" property="output"/>
+        <result column="spj" property="spj"/>
+        <result column="hint" property="hint"/>
+        <result column="creat_date" property="creatDate"/>
+        <result column="time_limit" property="timeLimit"/>
+        <result column="memory_limit" property="memoryLimit"/>
+        <result column="status" property="status"/>
+        <result column="accepted" property="accepted"/>
+        <result column="submit" property="submit"/>
+        <result column="solved" property="solved"/>
+        <result column="level" property="level"/>
+        <result column="point_id" property="pointId"/>
+    </resultMap>
+    <resultMap id="BaseResult1" type="com.loop.web.bean.Problem">
+        <id column="problem_id" property="problemId"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="input" property="input"/>
+        <result column="output" property="output"/>
+        <result column="spj" property="spj"/>
+        <result column="hint" property="hint"/>
+        <result column="creat_date" property="creatDate"/>
+        <result column="time_limit" property="timeLimit"/>
+        <result column="memory_limit" property="memoryLimit"/>
+        <result column="status" property="status"/>
+        <result column="accepted" property="accepted"/>
+        <result column="submit" property="submit"/>
+        <result column="solved" property="solved"/>
+        <result column="level" property="level"/>
+        <result column="point_id" property="pointId"/>
+        <collection property="tagsList" ofType="com.loop.web.bean.Tags">
+            <id column="tags_id" property="tagsId"/>
+            <result column="tags_name" property="tagsName"/>
+        </collection>
+    </resultMap>
+    <insert id="addQuestion" useGeneratedKeys="true"  keyProperty="problemId">
+        insert into
+        problem
+        (title,description,input,output,spj,hint,creat_date,time_limit,memory_limit,status,level,point_id)
+        values
+        (#{title},#{description},#{input},#{output},#{spj},
+        #{hint},#{creatDate},#{timeLimit},#{memoryLimit},#{status},#{level},#{pointId})
+    </insert>
+
+    <select id="selectAllPro" resultType="com.loop.web.bean.Problem">
+          select * from problem
+    </select>
+    <select id="selectProById" resultType="com.loop.web.bean.Problem">
+        select * from problem where problem_id=#{problemId}
+    </select>
+    <select id="getProblemById" resultMap="BaseResult1">
+          SELECT * from problem LEFT JOIN tags on  problem.problem_id=tags.problem_id
+          where problem.problem_id=#{problemId}
+
+    </select>
+    <delete id="detelePrpblem">
+        delete from problem where problem_id=#{problemId}
+    </delete>
+    <update id="updateQuestion">
+        update problem 
+        set 
+        title=#{title},description=#{description},input=#{input},output=#{output},
+        spj=#{spj},hint=#{hint},creat_date=#{creatDate},time_limit=#{timeLimit},memory_limit=#{memoryLimit},
+        status=#{status},level=#{level},point_id=#{pointId}
+        where problem_id=#{problemId}
+    </update>
+    <update id="updateProblemById">
+       update problem set submit=#{pro_submit} where problem_id=#{problemId}
+    </update>
+    <update id="updateProblemInfoById">
+        update problem set solved=#{pro_solved} where problem_id=#{problemId}
+    </update>
+
+
+</mapper>

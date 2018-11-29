@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.SourceCodeDao">
+
+    <insert id="addSourceCode">
+          insert into source_code (solution_id,source) values (#{solutionId},#{source})
+    </insert>
+    <select id="getCodeById" resultType="com.loop.web.bean.SourceCode">
+          select source from source_code where solution_id=#{id}
+    </select>
+</mapper>

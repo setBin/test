@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.LogDao">
+
+
+    <select id="getAllLog" resultType="com.loop.web.bean.Log">
+        select * from logs
+    </select>
+    <insert id="addLog">
+        insert into logs (logs_id,log_remarks,log_operation_url,log_time,log_operation_ip,log_username,logs_url)
+         values (#{logsId},#{logRemarks},#{logOperationUrl},#{logTime},#{logOperationIp},#{logUsername},#{logsUrl})
+    </insert>
+</mapper>

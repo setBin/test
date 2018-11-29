@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loop.web.dao.RoleDao">
+    <resultMap id="BaseResultMap" type="com.loop.web.bean.Role">
+        <id column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_remark" jdbcType="VARCHAR" property="roleRemark"/>
+    </resultMap>
+    <insert id="insertRole" parameterType="Role">
+        insert into role (role_id,role_name,role_remark) values (#{roleId},#{roleName},#{roleRemark})
+    </insert>
+    <select id="getAllRoles" resultMap="BaseResultMap">
+        select role_id,role_name,role_remark from role
+    </select>
+    <select id="getRoleById" parameterType="String" resultMap="BaseResultMap">
+        select role_id,role_name,role_remark from  role where role_id=#{id}
+    </select>
+    <update id="updateRole" parameterType="Role">
+        update role
+        <trim prefix="set" suffixOverrides=",">
+        <if test="roleName!=null and roleName!=''">
+            role_name=#{roleName},
+        </if>
+        <if test="roleRemark!=null and roleRemark!=''">
+            role_remark=#{roleRemark}
+        </if>
+        </trim>
+         where  role_id=#{roleId}
+    </update>
+    <select id="getRoleMenuIds" parameterType="String" resultType="String">
+        select menu_id from role_menu
+        where role_id=#{id}
+    </select>
+    <!--取消角色的权限  -->
+    <delete id="deleteRoleMenu" parameterType="String">
+        delete from ROLE_MENU where ROLE_ID=#{roleId}
+    </delete>
+    <!--通过传入角色id和菜单id  插入角色菜单关联表  给角色赋予菜单-->
+    <insert id="addRoleMenu" parameterType="map">
+        insert into ROLE_MENU(ROLE_ID,MENU_ID)
+        values(#{roleId},#{menuId})
+    </insert>
+
+</mapper>

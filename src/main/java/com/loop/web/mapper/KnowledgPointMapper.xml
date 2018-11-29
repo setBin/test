@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loop.web.dao.KnowledgPointDao">
+    <resultMap id="BaseRuseltKnw" type="com.loop.web.bean.KnowledgPoint">
+        <id column="point_id" jdbcType="VARCHAR" property="pointId"/>
+        <result column="point_name" jdbcType="VARCHAR" property="pointName"/>
+        <result column="point_remark" jdbcType="VARCHAR" property="pointRemark"/>
+        <result column="section_id" jdbcType="VARCHAR" property="sectionId"/>
+    </resultMap>
+    <resultMap id="diffcultRuseltKnw" type="com.loop.web.bean.KnowledgPoint">
+        <id column="point_id" jdbcType="VARCHAR" property="pointId"/>
+        <result column="point_name" jdbcType="VARCHAR" property="pointName"/>
+        <result column="point_remark" jdbcType="VARCHAR" property="pointRemark"/>
+        <collection property="problemList" ofType="com.loop.web.bean.Problem">
+            <id column="problem_id" property="problemId"/>
+            <result column="title" property="title"/>
+            <result column="description" property="description"/>
+            <result column="input" property="input"/>
+            <result column="output" property="output"/>
+            <result column="spj" property="spj"/>
+            <result column="hint" property="hint"/>
+            <result column="creat_date" property="creatDate"/>
+            <result column="time_limit" property="timeLimit"/>
+            <result column="memory_limit" property="memoryLimit"/>
+            <result column="status" property="status"/>
+            <result column="accepted" property="accepted"/>
+            <result column="submit" property="submit"/>
+            <result column="solved" property="solved"/>
+            <result column="level" property="level"/>
+        </collection>
+    </resultMap>
+    <select id="getAllKonwledPoint"  resultType="java.util.HashMap">
+        select point_id,point_name,point_remark from  knowledge_point
+    </select>
+    <select id="getAllKonwledPointBysectionId" resultMap="BaseRuseltKnw" parameterType="String">
+        select * from  knowledge_point where section_id=#{sectionId}
+    </select>
+    <insert id="addkonwledgPoint" >
+        insert into knowledge_point  (point_id,point_name,point_remark,section_id)
+        values
+        (#{pointId},#{pointName},#{pointRemark},#{sectionId})
+    </insert>
+    <update id="updaetKnowledgPoint">
+        update knowledge_point set
+        <if test="pointName!=null and pointName.trim()!=''">
+            point_name=#{pointName},
+        </if>
+        <if test="pointRemark!=null and pointRemark.trim()!=''">
+            point_remark=#{pointRemark}
+        </if>
+        where point_id=#{pointId}
+    </update>
+    <select id="getProblemBykonwledgPoint" resultMap="diffcultRuseltKnw" parameterType="String">
+            SELECT *
+            from knowledge_point LEFT JOIN problem on knowledge_point.point_id=problem.point_id
+            where problem.point_id=#{konwledgPointId}
+    </select>
+</mapper>

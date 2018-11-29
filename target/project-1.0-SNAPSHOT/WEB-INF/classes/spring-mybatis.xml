@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!--下划线转驼峰-->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<!--开启延时加载 默认开启 这里显示开启-->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<!--延时按需加载 需要才加载 false为按需-->
+		<setting name="aggressiveLazyLoading" value="false"/>
+	</settings>
+	<!--指定一个包名，MyBatis 会在包名下面搜索需要的 Java Bean-->
+	<typeAliases>
+		<package name="com.loop.web.bean"/>
+	</typeAliases>
+	<!--这个是放mybatis的插件-->
+	<plugins>
+		<!--分页插件-->
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<!--分页参数合理化  -->
+			<property name="reasonable" value="true"/>
+		</plugin>
+	</plugins>
+
+</configuration>
